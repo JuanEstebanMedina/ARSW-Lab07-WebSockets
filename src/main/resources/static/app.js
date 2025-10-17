@@ -23,6 +23,33 @@ var app = (function () {
         ctx.stroke();
     };
 
+    // PartIV
+    var drawPolygon = function (polygon) {
+        console.log('Drawing polygon with points:', polygon.points);
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+        if (polygon.points && polygon.points.length > 0) {
+            ctx.beginPath();
+            ctx.strokeStyle = "#2730b1ff";
+            ctx.fillStyle = "rgba(68, 142, 190, 0.66)";
+            ctx.lineWidth = 2;
+
+            ctx.moveTo(polygon.points[0].x, polygon.points[0].y);
+
+            for (var i = 1; i < polygon.points.length; i++) {
+                ctx.lineTo(polygon.points[i].x, polygon.points[i].y);
+            }
+
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            console.log('Polygon drawn');
+        }
+    };
+
     var getMousePosition = function (evt) {
         canvas = document.getElementById("canvas");
         var rect = canvas.getBoundingClientRect();
@@ -32,6 +59,16 @@ var app = (function () {
         };
     };
 
+    var updateStatus = function(connected) {
+        var statusEl = document.getElementById('status');
+        if (connected) {
+            statusEl.className = 'status connected';
+            statusEl.textContent = 'Connected to Room ' + currentDrawingId;
+        } else {
+            statusEl.className = 'status disconnected';
+            statusEl.textContent = 'Disconnected';
+        }
+    };
 
     var connectAndSubscribe = function () {
 
@@ -54,21 +91,26 @@ var app = (function () {
             console.log('Connected: ' + frame);
 
             // PartIII
-            var topic = '/topic/newpoint.' + currentDrawingId;
+            var topicPoints = '/topic/newpoint.' + currentDrawingId;
+            var topicPolygon = '/topic/newpolygon.' + currentDrawingId;
             //Part I - 2.
-            stompClient.subscribe(topic, function (eventbody) {
-                console.log('Message received' + topic, eventbody);
+            stompClient.subscribe(topicPoints, function (eventbody) {
+                console.log('Message received' + topicPoints, eventbody);
 
                 var theObject = JSON.parse(eventbody.body);
 
-                
+
                 // alert('Punto recibido: X=' + theObject.x + ', Y=' + theObject.y);
                 //Part II - 1.
                 addPointToCanvas(theObject);
             });
 
-            console.log('Subscription complete to ' + topic);
-            alert('Connected to drawing ' + currentDrawingId + '!');
+            stompClient.subscribe(topicPolygon, function (eventbody) {
+                console.log('Polygon received from ' + topicPolygon, eventbody);
+                var polygon = JSON.parse(eventbody.body);
+                console.log('Parsed polygon:', polygon);
+                drawPolygon(polygon);
+            });
         });
 
     };
@@ -81,12 +123,28 @@ var app = (function () {
             var can = document.getElementById("canvas");
 
             //websocket connection
-            
+
+            canvas.addEventListener("click", function(evt) {
+                if (currentDrawingId === null) {
+                    alert('connect to a room first');
+                    return;
+                }
+                
+                var mousePos = getMousePosition(evt);
+                console.log("Mouse clicked at:", mousePos);
+                app.publishPoint(mousePos.x, mousePos.y);
+            });
+
         },
 
         connectAndSubscribe: connectAndSubscribe,
 
         publishPoint: function (px, py) {
+            if (currentDrawingId === null) {
+                alert('Please connect to a drawing first!');
+                return;
+            }
+
             var pt = new Point(parseInt(px), parseInt(py));
             console.info("publishing point at " + pt);
             // addPointToCanvas(pt);
@@ -94,18 +152,19 @@ var app = (function () {
             //publicar el evento
 
             //PartIII
-            var topic = '/topic/newpoint.' + currentDrawingId;
+            // var topic = '/topic/newpoint.' + currentDrawingId;
 
             //Part I - 1.
-            stompClient.send(topic, {}, JSON.stringify(pt)); 
+            // stompClient.send(topic, {}, JSON.stringify(pt)); 
 
-            // if (stompClient !== null && stompClient.connected) {
-            //     stompClient.send("/topic/newpoint", {}, JSON.stringify(pt));
-            //     console.log('Point sent!');
-            // } else {
-            //     console.error('STOMP client not connected yet!');
-            //     alert('Please wait a moment for the connection to establish.');
-            // }
+            if (stompClient !== null && stompClient.connected) {
+                var topic = '/app/newpoint.' + currentDrawingId;
+                console.log('Sending point to ' + topic + ':', JSON.stringify(pt));
+                stompClient.send(topic, {}, JSON.stringify(pt));
+            } else {
+                console.error('STOMP client not connected yet!');
+                alert('Please wait a moment for the connection');
+            }
         },
 
         disconnect: function () {

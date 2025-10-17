@@ -31,17 +31,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     
     <body onload="app.init()">
+        <div class="container">
 
-        <!--Part III - 1. -->
-        Drawing Number: <input id="drawingId" type="number" placeholder="1"/>
+            <div class="controls">
+                <label>Drawing Room:</label>
+                <input id="drawingId" type="number" placeholder="Room #" min="1"/>
+                <button onclick="app.connectAndSubscribe()">Connect</button>
+                <span id="status" class="disconnected">Disconnected</span>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <canvas id="canvas" width="800" height="500"></canvas>
+            </div>
 
-        <!--Part III - 2. -->
+        <!--Part III - 1. 
+        Drawing Number: <input id="drawingId" type="number" placeholder="1"/>-->
+
+        <!--Part III - 2.
         <button onclick="app.connectAndSubscribe()">Connect</button>
 
         X:<input id="x" type="number"/>
-        Y:<input id="y" type="number"/>
-        <!--Part I - 2. -->    
+        Y:<input id="y" type="number"/> -->
+        <!--Part I - 2. 
         <button onclick="app.publishPoint(document.getElementById('x').value, document.getElementById('y').value)">Send point</button>
-        <canvas id="canvas" width="800" height="600"></canvas>
+        <canvas id="canvas" width="800" height="600"></canvas>-->   
+        </div> 
     </body>
 </html>
