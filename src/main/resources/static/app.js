@@ -36,9 +36,10 @@ var app = (function () {
         //subscribe to /topic/TOPICXX when connections succeed
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/TOPICXX', function (eventbody) {
-                
-                
+            //Part I - 2.
+            stompClient.subscribe('/topic/newpoint', function (eventbody) {
+                var theObject=JSON.parse(eventbody.body);
+                alert('Punto recibido: X=' + theObject.x + ', Y=' + theObject.y);
             });
         });
 
@@ -61,6 +62,9 @@ var app = (function () {
             addPointToCanvas(pt);
 
             //publicar el evento
+
+            //Part I - 1.
+            stompClient.send("/topic/newpoint", {}, JSON.stringify(pt)); 
         },
 
         disconnect: function () {
