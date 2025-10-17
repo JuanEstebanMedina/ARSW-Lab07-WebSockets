@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2016 Pivotal Software, Inc.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="/webjars/jquery/3.1.0/jquery.min.js"></script>
+        <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+        <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+        <script src="/app.js"></script>
+        <link rel="stylesheet" href="/styles.css">
+
+    </head>
+
+
+    
+    <body onload="app.init()">
+        <div class="container">
+
+            <div class="controls">
+                <label>Drawing Room:</label>
+                <input id="drawingId" type="number" placeholder="Room #" min="1"/>
+                <button onclick="app.connectAndSubscribe()">Connect</button>
+                <span id="status" class="disconnected">Disconnected</span>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <canvas id="canvas" width="800" height="500"></canvas>
+            </div>
+
+        <!--Part III - 1. 
+        Drawing Number: <input id="drawingId" type="number" placeholder="1"/>-->
+
+        <!--Part III - 2.
+        <button onclick="app.connectAndSubscribe()">Connect</button>
+
+        X:<input id="x" type="number"/>
+        Y:<input id="y" type="number"/> -->
+        <!--Part I - 2. 
+        <button onclick="app.publishPoint(document.getElementById('x').value, document.getElementById('y').value)">Send point</button>
+        <canvas id="canvas" width="800" height="600"></canvas>-->   
+        </div> 
+    </body>
+</html>
