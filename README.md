@@ -201,21 +201,7 @@ var topic = '/topic/newpoint.' + currentDrawingId;
 stompClient.send(topic, {}, JSON.stringify(pt));
 ```
 
-4. **Rectificamos que se puedan realizar dos dibujos de forma independiente**, cada uno entre dos o más clientes:
-
-**Prueba 1 - Mismo dibujo (sala 25):**
-
-<img src="PartIII-Pruebas2.png" alt="Pruebas Parte III - Sala 25">
-
-Abrimos 3 pestañas, todas conectadas a la sala 25. Los puntos se sincronizan correctamente entre todas.
-
-**Prueba 2 - Múltiples dibujos independientes:**
-
-<img src="PartIII-Pruebas3.png" alt="Pruebas Parte III - Múltiples salas">
-
-Abrimos 6 pestañas: 3 conectadas a la sala 25 y 3 a la sala 80. Verificamos que los dibujos son completamente independientes.
-
-5. **Pruebas**
+4. **Pruebas**
 
 ![](https://github.com/JuanEstebanMedina/ARSW-Lab07-WebSockets/blob/develop/img/PartIIIPruebas.png)
 
